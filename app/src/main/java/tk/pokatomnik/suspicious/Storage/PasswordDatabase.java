@@ -1,4 +1,4 @@
-package tk.pokatomnik.suspicious;
+package tk.pokatomnik.suspicious.Storage;
 
 import androidx.room.Database;
 import androidx.room.RoomDatabase;
