@@ -7,25 +7,38 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 import tk.pokatomnik.suspicious.Entities.Password;
 
-public class PasswordsRecyclerViewManager {
+public class PasswordsRecyclerViewManager implements Disposable {
     private final PasswordsAdapter adapter;
 
-    private final List<Password> passwords;
+    private final BehaviorSubject<List<Password>> passwordsSubject;
+
+    private final Disposable passwordsSubscription;
 
     private final PublishSubject<Password> clickSubject = PublishSubject.create();
+
+    private boolean isDisposed = false;
 
     public PasswordsRecyclerViewManager(
             RecyclerView initialRecyclerView,
             Context context
     ) {
-        passwords = new ArrayList<>();
-        adapter = new PasswordsAdapter(passwords, this::onPasswordClick);
+        final List<Password> data = new ArrayList<>();
+        passwordsSubject = BehaviorSubject.createDefault(data);
+        adapter = new PasswordsAdapter(data, this::onPasswordClick);
+
+        passwordsSubscription = passwordsSubject.subscribe((newPasswordsRaw) -> {
+            final List<Password> newPasswords = new ArrayList<>(newPasswordsRaw);
+            data.clear();
+            data.addAll(newPasswords);
+            adapter.notifyDataSetChanged();
+        });
 
         initialRecyclerView.setHasFixedSize(true);
         initialRecyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -37,12 +50,21 @@ public class PasswordsRecyclerViewManager {
     }
 
     public void updatePasswords(List<Password> newPasswords) {
-        passwords.clear();
-        passwords.addAll(newPasswords);
-        adapter.notifyDataSetChanged();
+        passwordsSubject.onNext(newPasswords);
     }
 
     public Observable<Password> getClickSubject() {
         return clickSubject.hide();
+    }
+
+    @Override
+    public void dispose() {
+        isDisposed = true;
+        passwordsSubscription.dispose();
+    }
+
+    @Override
+    public boolean isDisposed() {
+        return isDisposed;
     }
 }

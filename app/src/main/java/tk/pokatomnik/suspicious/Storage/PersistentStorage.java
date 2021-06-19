@@ -12,8 +12,8 @@ public final class PersistentStorage {
 
     private PersistentStorage(Context context) {
         passwordDatabase = Room
-                .databaseBuilder(context, PasswordDatabase.class, "passwords")
-                .build();
+            .databaseBuilder(context, PasswordDatabase.class, "passwords")
+            .build();
     }
 
     public static PersistentStorage getInstance(@Nullable Context context) {

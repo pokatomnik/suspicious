@@ -8,8 +8,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
+import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import tk.pokatomnik.suspicious.CustomFragments.DomainCaptureFragment;
@@ -26,19 +30,19 @@ public class HomeFragment extends DomainCaptureFragment {
     private BehaviorSubject<String> searchTextSubject;
 
     @Nullable
-    private Disposable allPasswordsSubscription;
-
-    @Nullable
     private Disposable passwordClickSubscription;
 
     @Nullable
     private Disposable searchTextSubscription;
 
+    @Nullable
+    private Disposable searchPasswordsSubscription;
+
     @Override
     public View onCreateView(
-            @NonNull LayoutInflater inflater,
-            ViewGroup container,
-            Bundle savedInstanceState
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        Bundle savedInstanceState
     ) {
         super.onCreateView(inflater, container, savedInstanceState);
         binding = FragmentHomeBinding.inflate(inflater, container, false);
@@ -52,11 +56,26 @@ public class HomeFragment extends DomainCaptureFragment {
             binding.searchView.setQuery(newText, false);
         });
 
+        searchPasswordsSubscription = Observable
+            .combineLatest(
+                searchTextSubject.distinctUntilChanged(),
+                passwordsExtractor.getPasswordsObservable().distinctUntilChanged(),
+                this::applySearch
+            )
+            .debounce(1, TimeUnit.SECONDS)
+            .subscribe((results) -> {
+                Optional.ofNullable(getActivity()).ifPresent((activity) -> {
+                    activity.runOnUiThread(() -> {
+                        passRecycleViewManager.updatePasswords(results);
+                    });
+                });
+            });
+
         binding.floatingActionButton.setOnClickListener((View view) -> capture());
 
         passwordClickSubscription = passRecycleViewManager
-                .getClickSubject()
-                .subscribe(this::handlePasswordClick);
+            .getClickSubject()
+            .subscribe(this::handlePasswordClick);
 
         return binding.getRoot();
     }
@@ -64,23 +83,31 @@ public class HomeFragment extends DomainCaptureFragment {
     @Override
     public void onStart() {
         super.onStart();
-        this.refreshPasswords();
+        passwordsExtractor.extract();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-        Optional.ofNullable(allPasswordsSubscription).ifPresent(Disposable::dispose);
         Optional.ofNullable(passwordClickSubscription).ifPresent(Disposable::dispose);
         Optional.ofNullable(searchTextSubscription).ifPresent(Disposable::dispose);
+        Optional.ofNullable(searchPasswordsSubscription).ifPresent(Disposable::dispose);
+        passRecycleViewManager.dispose();
+        passwordsExtractor.dispose();
     }
 
-    private void refreshPasswords() {
-        allPasswordsSubscription = passwordsExtractor.extract(passRecycleViewManager::updatePasswords);
+    private List<Password> applySearch(String searchString, List<Password> source) {
+        if (searchString.equals("")) {
+            return source;
+        }
+        return source.stream().filter(((password) -> {
+            return password.match(searchString);
+        })).collect(Collectors.toList());
     }
 
-    private void handlePasswordClick(Password password) {}
+    private void handlePasswordClick(Password password) {
+    }
 
     @Override
     protected void onCapture(String result) {
