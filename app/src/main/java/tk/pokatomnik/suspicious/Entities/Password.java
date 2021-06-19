@@ -16,19 +16,59 @@ public final class Password implements Match {
     }
 
     @PrimaryKey(autoGenerate = true)
-    public int uid;
+    private int uid;
 
     @ColumnInfo(name = "domain")
-    public String domain;
+    private String domain;
 
     @ColumnInfo(name = "username")
-    public String userName;
+    private String userName;
 
     @ColumnInfo(name = "password")
-    public String password;
+    private String password;
 
     @ColumnInfo(name = "comment")
-    public String comment;
+    private String comment;
+
+    public int getUid() {
+        return uid;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
     @Override
     public boolean match(String query) {

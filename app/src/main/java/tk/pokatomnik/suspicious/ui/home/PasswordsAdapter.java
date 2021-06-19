@@ -20,7 +20,7 @@ public class PasswordsAdapter extends GenericRecycleViewAdapter<Password> {
         final TextView domain = linearLayout.findViewById(R.id.domain);
         final TextView userName = linearLayout.findViewById(R.id.user_name);
 
-        domain.setText(item.domain);
-        userName.setText(item.userName);
+        domain.setText(item.getDomain());
+        userName.setText(item.getUserName());
     }
 }

@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_gallery"
+        android:id="@+id/add_password"
         android:name="tk.pokatomnik.suspicious.ui.gallery.GalleryFragment"
         android:label="@string/menu_new"
         tools:layout="@layout/fragment_gallery" />
