@@ -11,8 +11,12 @@ import tk.pokatomnik.suspicious.GenericRecycleViewAdapter;
 import tk.pokatomnik.suspicious.R;
 
 public class PasswordsAdapter extends GenericRecycleViewAdapter<Password> {
-    public PasswordsAdapter(List<Password> passwordsData, Consumer<Password> onPasswordClick) {
-        super(passwordsData, onPasswordClick);
+    public PasswordsAdapter(
+        List<Password> passwordsData,
+        Consumer<Password> onPasswordClick,
+        Consumer<Password> onRemoveClick
+    ) {
+        super(passwordsData, onPasswordClick, onRemoveClick);
     }
 
     @Override

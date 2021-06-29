@@ -12,14 +12,14 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/add_password"
-        android:name="tk.pokatomnik.suspicious.ui.gallery.GalleryFragment"
-        android:label="@string/menu_new"
-        tools:layout="@layout/fragment_gallery" />
+        android:id="@+id/nav_add_password"
+        android:name="tk.pokatomnik.suspicious.ui.newpassword.NewPasswordFragment"
+        android:label="@string/menu_new_password"
+        tools:layout="@layout/fragment_password_form" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="tk.pokatomnik.suspicious.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_edit_password"
+        android:name="tk.pokatomnik.suspicious.ui.editpassword.EditPasswordFragment"
+        android:label="@string/menu_edit_password"
+        tools:layout="@layout/fragment_password_form" />
 </navigation>

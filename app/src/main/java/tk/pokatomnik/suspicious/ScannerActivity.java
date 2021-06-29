@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.budiyev.android.codescanner.CodeScanner;
@@ -31,6 +32,21 @@ public class ScannerActivity extends AppCompatActivity {
         codeScanner = CodeScannerFactory.make(this, binding.scannerView);
         codeScanner.setDecodeCallback(this::onDecoded);
         binding.scannerView.setOnClickListener(this::handleClick);
+
+        Optional.ofNullable(getSupportActionBar()).ifPresent((actionBar) -> {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            final Intent resultIntent = new Intent();
+            setResult(Activity.RESULT_CANCELED, resultIntent);
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void onDecoded(@NonNull final Result result) {

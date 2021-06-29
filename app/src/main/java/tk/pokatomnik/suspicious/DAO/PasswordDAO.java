@@ -5,6 +5,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -17,8 +18,11 @@ public interface PasswordDAO {
     @Query("SELECT * FROM password")
     Single<List<Password>> getAll();
 
-    @Query("Select * from password WHERE uid IN (:userIds)")
+    @Query("SELECT * from password WHERE uid IN (:userIds)")
     Single<List<Password>> loadAllByIds(int[] userIds);
+
+    @Query("SELECT * FROM password WHERE uid = :uid")
+    Single<Password> getByUID(int uid);
 
     @Query("SELECT * FROM password WHERE domain LIKE :domainParam LIMIT 1")
     Single<Password> findByDomain(String domainParam);
@@ -28,4 +32,7 @@ public interface PasswordDAO {
 
     @Delete
     Completable delete(Password password);
+
+    @Update
+    Completable update(Password password);
 }

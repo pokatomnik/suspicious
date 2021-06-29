@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="floating_capture_button_content_description">
+    <string name="home_capture_button_content_description">
         Capture QR code
     </string>
 </resources>

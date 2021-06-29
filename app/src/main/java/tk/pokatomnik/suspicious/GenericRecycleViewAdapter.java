@@ -2,6 +2,7 @@ package tk.pokatomnik.suspicious;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -26,17 +27,23 @@ public abstract class GenericRecycleViewAdapter<T>
         public ViewHolder(
             LinearLayout layout,
             Consumer<T> onClick,
+            Consumer<T> onRemoveClick,
             BiConsumer<T, LinearLayout> layoutFiller
         ) {
             super(layout);
-            linearLayout = layout;
             fillLayout = layoutFiller;
+
+            linearLayout = layout.findViewById(R.id.clickable_item);
+            final Button removeButton = layout.findViewById(R.id.clickable_remove);
             linearLayout.setOnClickListener((view) -> {
                 onClick.accept(item);
             });
+            removeButton.setOnClickListener((view) -> {
+                onRemoveClick.accept(item);
+            });
         }
 
-        public void setPassword(T newItem) {
+        public void setItem(T newItem) {
             item = newItem;
             fillLayout.accept(item, linearLayout);
         }
@@ -46,12 +53,16 @@ public abstract class GenericRecycleViewAdapter<T>
 
     private final Consumer<T> onClick;
 
+    private final Consumer<T> onRemoveClick;
+
     public GenericRecycleViewAdapter(
-        List<T> passwordsData,
-        Consumer<T> onPasswordClick
+        List<T> items,
+        Consumer<T> onClick,
+        Consumer<T> onRemoveClick
     ) {
-        data = passwordsData;
-        onClick = onPasswordClick;
+        data = items;
+        this.onClick = onClick;
+        this.onRemoveClick = onRemoveClick;
     }
 
     protected abstract void fillLayout(T item, LinearLayout linearLayout);
@@ -63,8 +74,8 @@ public abstract class GenericRecycleViewAdapter<T>
         int viewType
     ) {
         final LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(parent.getContext())
-            .inflate(R.layout.password_item, parent, false);
-        return new GenericRecycleViewAdapter.ViewHolder<T>(linearLayout, onClick, this::fillLayout);
+            .inflate(R.layout.layout_item, parent, false);
+        return new GenericRecycleViewAdapter.ViewHolder<>(linearLayout, onClick, onRemoveClick, this::fillLayout);
     }
 
     @Override
@@ -73,11 +84,16 @@ public abstract class GenericRecycleViewAdapter<T>
         int position
     ) {
         final T item = data.get(position);
-        viewHolder.setPassword(item);
+        viewHolder.setItem(item);
     }
 
     @Override
     public int getItemCount() {
         return data.size();
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull @NotNull ViewHolder<T> holder) {
+        super.onViewRecycled(holder);
     }
 }

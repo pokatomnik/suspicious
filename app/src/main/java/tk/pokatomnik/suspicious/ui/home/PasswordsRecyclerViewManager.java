@@ -23,6 +23,8 @@ public class PasswordsRecyclerViewManager implements Disposable {
 
     private final PublishSubject<Password> clickSubject = PublishSubject.create();
 
+    private final PublishSubject<Password> clickRemoveSubject = PublishSubject.create();
+
     private boolean isDisposed = false;
 
     public PasswordsRecyclerViewManager(
@@ -31,7 +33,7 @@ public class PasswordsRecyclerViewManager implements Disposable {
     ) {
         final List<Password> data = new ArrayList<>();
         passwordsSubject = BehaviorSubject.createDefault(data);
-        adapter = new PasswordsAdapter(data, this::onPasswordClick);
+        adapter = new PasswordsAdapter(data, this::onPasswordClick, this::onPasswordRemoveClick);
 
         passwordsSubscription = passwordsSubject.subscribe((newPasswordsRaw) -> {
             final List<Password> newPasswords = new ArrayList<>(newPasswordsRaw);
@@ -49,12 +51,20 @@ public class PasswordsRecyclerViewManager implements Disposable {
         clickSubject.onNext(password);
     }
 
+    private void onPasswordRemoveClick(Password password) {
+        clickRemoveSubject.onNext(password);
+    }
+
     public void updatePasswords(List<Password> newPasswords) {
         passwordsSubject.onNext(newPasswords);
     }
 
     public Observable<Password> getClickSubject() {
         return clickSubject.hide();
+    }
+
+    public Observable<Password> getClickRemoveSubject() {
+        return clickRemoveSubject.hide();
     }
 
     @Override

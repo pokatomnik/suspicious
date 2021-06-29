@@ -1,4 +1,4 @@
-package tk.pokatomnik.suspicious.ui.home;
+package tk.pokatomnik.suspicious.Utils;
 
 import android.widget.SearchView;
 

@@ -5,22 +5,23 @@ import android.content.Context;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import io.reactivex.rxjava3.subjects.PublishSubject;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import tk.pokatomnik.suspicious.Entities.Password;
 import tk.pokatomnik.suspicious.Storage.PersistentStorage;
+import tk.pokatomnik.suspicious.Utils.ToastError;
 
 public class PasswordsExtractor implements Disposable {
     private final Context context;
 
     private final FragmentActivity fragmentActivity;
 
-    private final PublishSubject<List<Password>> publishSubject = PublishSubject.create();
+    private final BehaviorSubject<List<Password>> publishSubject = BehaviorSubject.createDefault(new ArrayList<>());
 
     @Nullable
     private Disposable fetchPasswordsSubscription;
@@ -48,11 +49,11 @@ public class PasswordsExtractor implements Disposable {
                             publishSubject.onNext(result);
                         });
                     });
-                });
+                }, new ToastError<>(fragmentActivity, "Error getting passwords"));
     }
 
-    public Observable<List<Password>> getPasswordsObservable() {
-        return publishSubject.hide();
+    public BehaviorSubject<List<Password>> getPasswordsObservable() {
+        return publishSubject;
     }
 
     @Override

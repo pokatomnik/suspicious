@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/clickable_item"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_gravity="start"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="32dp"
+        android:paddingVertical="8dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/domain"
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:textAlignment="viewStart"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:textAlignment="viewStart"
+            tools:text="" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/clickable_remove"
+        android:layout_width="40dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:layout_weight="0"
+        android:layout_marginEnd="5dp"
+        android:backgroundTint="@color/transparent"
+        android:stateListAnimator="@null"
+        android:clickable="true"
+        android:drawableBottom="@drawable/ic_baseline_delete_forever_24" />
+</LinearLayout>
