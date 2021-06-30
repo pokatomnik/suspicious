@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="48dp"
     android:orientation="horizontal">
-
+    <!-- TODO fix this layout: increase text height  -->
     <LinearLayout
         android:id="@+id/clickable_item"
         android:layout_width="match_parent"

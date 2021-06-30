@@ -106,22 +106,24 @@ public class HomeFragment extends DomainCaptureFragment {
     public void onStart() {
         super.onStart();
         removeExecutorService.execute(() -> {
-            while (true) try {
-                final Password password = removeQueue.take();
-                removePasswordFromDB(password, (removeError) -> {
-                    passwordsExtractor.extract();
-                    Optional.ofNullable(getActivity()).ifPresent((activity) -> {
-                        activity.runOnUiThread(() -> {
-                            Toast.makeText(
-                                getContext(),
-                                "Failed to remove password",
-                                Toast.LENGTH_LONG
-                            ).show();
+            try {
+                while (true) {
+                    final Password password = removeQueue.take();
+                    removePasswordFromDB(password, (removeError) -> {
+                        passwordsExtractor.extract();
+                        Optional.ofNullable(getActivity()).ifPresent((activity) -> {
+                            activity.runOnUiThread(() -> {
+                                Toast.makeText(
+                                    getContext(),
+                                    "Failed to remove password",
+                                    Toast.LENGTH_LONG
+                                ).show();
+                            });
                         });
                     });
-                });
+                }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Thread.currentThread().interrupt();
             }
         });
 
@@ -139,7 +141,6 @@ public class HomeFragment extends DomainCaptureFragment {
         Optional.ofNullable(passwordRemoveSubscription).ifPresent(Disposable::dispose);
         passRecycleViewManager.dispose();
         passwordsExtractor.dispose();
-        removeExecutorService.shutdown();
     }
 
     private List<Password> applySearch(String searchString, List<Password> source) {
