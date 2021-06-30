@@ -1,48 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
+    android:layout_height="wrap_content"
     android:orientation="horizontal">
-    <!-- TODO fix this layout: increase text height  -->
     <LinearLayout
         android:id="@+id/clickable_item"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="start"
+        android:layout_weight="1"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center"
         android:orientation="vertical"
         android:paddingHorizontal="32dp"
-        android:paddingVertical="8dp"
-        android:layout_weight="1">
+        android:paddingVertical="8dp">
 
         <TextView
             android:id="@+id/domain"
             android:layout_width="match_parent"
-            android:layout_height="16dp"
+            android:layout_height="wrap_content"
             android:textAlignment="viewStart"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/user_name"
             android:layout_width="match_parent"
-            android:layout_height="16dp"
-            android:textAlignment="viewStart"
-            tools:text="" />
+            android:layout_height="wrap_content"
+            android:elegantTextHeight="false"
+            android:textAlignment="viewStart" />
     </LinearLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/clickable_remove"
         android:layout_width="40dp"
         android:layout_height="match_parent"
-        android:layout_gravity="end"
         android:layout_weight="0"
         android:layout_marginEnd="5dp"
         android:backgroundTint="@color/transparent"
         android:stateListAnimator="@null"
         android:clickable="true"
-        android:drawableBottom="@drawable/ic_baseline_delete_forever_24" />
+        android:background="?attr/selectableItemBackground"
+        app:icon="@drawable/ic_baseline_delete_forever_24"
+        android:gravity="center"
+        app:iconGravity="top"
+        app:iconTint="@color/grey"
+        android:padding="10dp" />
 </LinearLayout>
