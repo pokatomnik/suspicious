@@ -16,17 +16,15 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Consumer;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 import tk.pokatomnik.suspicious.CustomFragments.DomainCaptureFragment;
 import tk.pokatomnik.suspicious.Entities.Password;
 import tk.pokatomnik.suspicious.R;
-import tk.pokatomnik.suspicious.Storage.PersistentStorage;
+import tk.pokatomnik.suspicious.SuspiciousApplication;
 import tk.pokatomnik.suspicious.Utils.ObservablePrimitiveValueConnector;
 import tk.pokatomnik.suspicious.Utils.SearchViewOnChangeListener;
 import tk.pokatomnik.suspicious.databinding.FragmentHomeBinding;
@@ -66,7 +64,7 @@ public class HomeFragment extends DomainCaptureFragment {
         super.onCreateView(inflater, container, savedInstanceState);
         binding = FragmentHomeBinding.inflate(inflater, container, false);
 
-        passwordsExtractor = new PasswordsExtractor(getContext(), getActivity());
+        passwordsExtractor = new PasswordsExtractor(getActivity());
         passRecycleViewManager = new PasswordsRecyclerViewManager(binding.recyclerView, getContext());
 
         searchTextObservable = new ObservablePrimitiveValueConnector<>(
@@ -179,12 +177,14 @@ public class HomeFragment extends DomainCaptureFragment {
     }
 
     private void removePasswordFromDB(Password password, Consumer<Throwable> onError) {
-        passwordRemoveSubscription = PersistentStorage
-            .getInstance(getContext())
-            .getPasswordDatabase()
-            .passwordDAO()
-            .delete(password)
-            .subscribe(() -> {}, onError);
+        passwordRemoveSubscription = Optional.ofNullable(getActivity()).map((activity) -> {
+            final SuspiciousApplication application = (SuspiciousApplication) activity.getApplication();
+            return application
+                .getPasswordDatabase()
+                .passwordDAO()
+                .delete(password)
+                .subscribe(() -> {}, onError);
+        }).orElse(Disposable.empty());
     }
 
     @Override

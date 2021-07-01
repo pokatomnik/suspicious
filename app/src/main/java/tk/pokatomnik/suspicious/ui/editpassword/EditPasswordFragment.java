@@ -17,7 +17,7 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import tk.pokatomnik.suspicious.Entities.Password;
 import tk.pokatomnik.suspicious.R;
-import tk.pokatomnik.suspicious.Storage.PersistentStorage;
+import tk.pokatomnik.suspicious.SuspiciousApplication;
 import tk.pokatomnik.suspicious.Utils.ToastError;
 import tk.pokatomnik.suspicious.ui.PasswordForm;
 
@@ -40,13 +40,15 @@ public class EditPasswordFragment extends PasswordForm {
     ) {
         final View root = super.onCreateView(inflater, container, savedInstanceState);
         ifHasID((passwordID) -> {
-            loadSubscription = PersistentStorage
-                .getInstance(getContext())
-                .getPasswordDatabase()
-                .passwordDAO()
-                .getByUID(passwordID)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(this::handlePassword, this::handleError);
+            loadSubscription = Optional.ofNullable(getActivity()).map((activity) -> {
+                final SuspiciousApplication application = (SuspiciousApplication) activity.getApplication();
+                return application
+                    .getPasswordDatabase()
+                    .passwordDAO()
+                    .getByUID(passwordID)
+                    .subscribeOn(Schedulers.newThread())
+                    .subscribe(this::handlePassword, this::handleError);
+            }).orElse(Disposable.empty());
         });
 
         return root;
@@ -86,11 +88,10 @@ public class EditPasswordFragment extends PasswordForm {
         final int passwordID = bundle.getInt(PASSWORD_ID_KEY);
         password.setUid(passwordID);
 
-        return PersistentStorage
-            .getInstance(getContext())
-            .getPasswordDatabase()
-            .passwordDAO()
-            .update(password);
+        return Optional.ofNullable(getActivity()).map((activity) -> {
+            final SuspiciousApplication application = (SuspiciousApplication) activity.getApplication();
+            return application.getPasswordDatabase().passwordDAO().update(password);
+        }).orElse(Completable.never());
     }
 
     @Override
