@@ -25,6 +25,7 @@ import tk.pokatomnik.suspicious.CustomFragments.DomainCaptureFragment;
 import tk.pokatomnik.suspicious.Entities.Password;
 import tk.pokatomnik.suspicious.R;
 import tk.pokatomnik.suspicious.SuspiciousApplication;
+import tk.pokatomnik.suspicious.Utils.Confirmation;
 import tk.pokatomnik.suspicious.Utils.ObservablePrimitiveValueConnector;
 import tk.pokatomnik.suspicious.Utils.SearchViewOnChangeListener;
 import tk.pokatomnik.suspicious.databinding.FragmentHomeBinding;
@@ -161,8 +162,14 @@ public class HomeFragment extends DomainCaptureFragment {
     }
 
     private void handlePasswordRemoveClick(Password password) {
-        removePasswordFromList(password);
-        removeQueue.offer(password);
+        new Confirmation(getContext())
+            .setTitle("Confirm removing")
+            .setDescription(String.format("Are you sure to remove password for %s", password.getDomain()))
+            .onYes(() -> {
+                removePasswordFromList(password);
+                removeQueue.offer(password);
+            })
+            .confirm();
     }
 
     private void removePasswordFromList(Password password) {
