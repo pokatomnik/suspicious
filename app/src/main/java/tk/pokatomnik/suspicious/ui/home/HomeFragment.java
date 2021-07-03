@@ -26,6 +26,9 @@ import tk.pokatomnik.suspicious.Entities.Password;
 import tk.pokatomnik.suspicious.R;
 import tk.pokatomnik.suspicious.SuspiciousApplication;
 import tk.pokatomnik.suspicious.Utils.Confirmation;
+import tk.pokatomnik.suspicious.Utils.Matchers.FuzzyMatcher;
+import tk.pokatomnik.suspicious.Utils.Matchers.IncludeMatcher;
+import tk.pokatomnik.suspicious.Utils.Matchers.Matcher;
 import tk.pokatomnik.suspicious.Utils.ObservablePrimitiveValueConnector;
 import tk.pokatomnik.suspicious.Utils.SearchViewOnChangeListener;
 import tk.pokatomnik.suspicious.databinding.FragmentHomeBinding;
@@ -78,7 +81,7 @@ public class HomeFragment extends DomainCaptureFragment {
             .combineLatest(
                 searchTextObservable.observe().distinctUntilChanged(),
                 passwordsExtractor.getPasswordsObservable().distinctUntilChanged(),
-                this::applySearch
+                this::applyFuzzySearch
             )
             .subscribe((results) -> {
                 Optional.ofNullable(getActivity()).ifPresent((activity) -> {
@@ -143,12 +146,27 @@ public class HomeFragment extends DomainCaptureFragment {
     }
 
     private List<Password> applySearch(String searchString, List<Password> source) {
-        if (searchString.equals("")) {
-            return source;
-        }
-        return source.stream().filter(((password) -> {
-            return password.match(searchString);
-        })).collect(Collectors.toList());
+        final Matcher<Password> includeMatcher = new IncludeMatcher<>((query, password) -> {
+            final String matchLower = query.toLowerCase();
+            final boolean matchDomain = password.getDomain().toLowerCase().contains(matchLower);
+            final boolean matchUserName = password.getUserName().toLowerCase().contains(matchLower);
+            final boolean matchComment = password.getComment().toLowerCase().contains(matchLower);
+            return matchDomain || matchUserName || matchComment ? 1 : 0;
+        });
+        return includeMatcher.getResults(searchString, source);
+    }
+
+    private List<Password> applyFuzzySearch(String searchString, List<Password> source) {
+        final Matcher<Password> fuzzyMatcher = new FuzzyMatcher<>((query, password, fuzzyScore) -> {
+            final String queryLower = query.toLowerCase();
+            final int domainScore = fuzzyScore.fuzzyScore(password.getDomain().toLowerCase(), queryLower);
+            final int userNameScore = fuzzyScore.fuzzyScore(password.getUserName().toLowerCase(), queryLower);
+            final int commentScore = fuzzyScore.fuzzyScore(password.getComment().toLowerCase(), queryLower);
+
+            return Math.max(Math.max(domainScore, userNameScore), commentScore);
+        });
+
+        return fuzzyMatcher.getResults(searchString, source);
     }
 
     private void handlePasswordClick(Password password) {

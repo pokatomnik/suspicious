@@ -42,8 +42,8 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment:2.3.5'
     implementation 'androidx.navigation:navigation-ui:2.3.5'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     // RxJava
     implementation "io.reactivex.rxjava3:rxjava:3.0.13"
@@ -55,4 +55,7 @@ dependencies {
 
     // Code scanner
     implementation 'com.github.yuriy-budiyev:code-scanner:2.1.0'
+
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-text
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
 }
