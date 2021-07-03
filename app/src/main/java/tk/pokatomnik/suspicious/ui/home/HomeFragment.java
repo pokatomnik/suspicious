@@ -13,14 +13,10 @@ import androidx.navigation.Navigation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.functions.Consumer;
 import tk.pokatomnik.suspicious.CustomFragments.DomainCaptureFragment;
 import tk.pokatomnik.suspicious.Entities.Password;
 import tk.pokatomnik.suspicious.R;
@@ -35,9 +31,7 @@ import tk.pokatomnik.suspicious.databinding.FragmentHomeBinding;
 import tk.pokatomnik.suspicious.ui.editpassword.EditPasswordFragment;
 
 public class HomeFragment extends DomainCaptureFragment {
-    private final LinkedBlockingQueue<Password> removeQueue = new LinkedBlockingQueue<>();
-
-    private final ExecutorService removeExecutorService = Executors.newSingleThreadExecutor();
+    private PasswordRemoveExecutor passwordRemoveExecutor;
 
     private FragmentHomeBinding binding;
 
@@ -56,18 +50,8 @@ public class HomeFragment extends DomainCaptureFragment {
     @Nullable
     private Disposable searchPasswordsSubscription;
 
-    @Nullable
-    private Disposable passwordRemoveSubscription;
-
     @Override
-    public View onCreateView(
-        @NonNull LayoutInflater inflater,
-        ViewGroup container,
-        Bundle savedInstanceState
-    ) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
-
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         passwordsExtractor = new PasswordsExtractor(getActivity());
         passRecycleViewManager = new PasswordsRecyclerViewManager(binding.recyclerView, getContext());
 
@@ -91,7 +75,7 @@ public class HomeFragment extends DomainCaptureFragment {
                 });
             });
 
-        binding.floatingActionButton.setOnClickListener((View view) -> capture());
+        binding.floatingActionButton.setOnClickListener((View unused) -> capture());
 
         passwordClickSubscription = passRecycleViewManager
             .getClickSubject()
@@ -101,34 +85,29 @@ public class HomeFragment extends DomainCaptureFragment {
             .getClickRemoveSubject()
             .subscribe(this::handlePasswordRemoveClick);
 
+        passwordRemoveExecutor = Optional.ofNullable(getActivity()).map((activity) -> {
+            final SuspiciousApplication application = (SuspiciousApplication) activity.getApplication();
+            return new PasswordRemoveExecutor(application, this::handlePasswordRemoveError);
+        }).orElse(null);
+
+        Optional.ofNullable(passwordRemoveExecutor).ifPresent(PasswordRemoveExecutor::initialize);
+    }
+
+    @Override
+    public View onCreateView(
+        @NonNull LayoutInflater inflater,
+        ViewGroup container,
+        Bundle savedInstanceState
+    ) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        binding = FragmentHomeBinding.inflate(inflater, container, false);
+
         return binding.getRoot();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        removeExecutorService.execute(() -> {
-            try {
-                while (true) {
-                    final Password password = removeQueue.take();
-                    removePasswordFromDB(password, (removeError) -> {
-                        passwordsExtractor.extract();
-                        Optional.ofNullable(getActivity()).ifPresent((activity) -> {
-                            activity.runOnUiThread(() -> {
-                                Toast.makeText(
-                                    getContext(),
-                                    "Failed to remove password",
-                                    Toast.LENGTH_LONG
-                                ).show();
-                            });
-                        });
-                    });
-                }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        });
-
         passwordsExtractor.extract();
     }
 
@@ -140,9 +119,18 @@ public class HomeFragment extends DomainCaptureFragment {
         Optional.ofNullable(passwordRemoveClickSubscription).ifPresent(Disposable::dispose);
         Optional.ofNullable(searchTextObservable).ifPresent(Disposable::dispose);
         Optional.ofNullable(searchPasswordsSubscription).ifPresent(Disposable::dispose);
-        Optional.ofNullable(passwordRemoveSubscription).ifPresent(Disposable::dispose);
+        passwordRemoveExecutor.dispose();
         passRecycleViewManager.dispose();
         passwordsExtractor.dispose();
+    }
+
+    private void handlePasswordRemoveError(Throwable err) {
+        passwordsExtractor.extract();
+        Optional.ofNullable(getActivity()).ifPresent((activity) -> {
+            activity.runOnUiThread(() -> {
+                Toast.makeText(getContext(),"Failed to remove password",Toast.LENGTH_LONG).show();
+            });
+        });
     }
 
     private List<Password> applySearch(String searchString, List<Password> source) {
@@ -185,7 +173,7 @@ public class HomeFragment extends DomainCaptureFragment {
             .setDescription(String.format("Are you sure to remove password for %s", password.getDomain()))
             .onYes(() -> {
                 removePasswordFromList(password);
-                removeQueue.offer(password);
+                passwordRemoveExecutor.queueRemove(password);
             })
             .confirm();
     }
@@ -199,17 +187,6 @@ public class HomeFragment extends DomainCaptureFragment {
                 .filter((currentPassword) -> currentPassword.getUid() != password.getUid())
                 .collect(Collectors.toList());
         passwordsExtractor.getPasswordsObservable().onNext(passwordsWithRemovedPassword);
-    }
-
-    private void removePasswordFromDB(Password password, Consumer<Throwable> onError) {
-        passwordRemoveSubscription = Optional.ofNullable(getActivity()).map((activity) -> {
-            final SuspiciousApplication application = (SuspiciousApplication) activity.getApplication();
-            return application
-                .getPasswordDatabase()
-                .passwordDAO()
-                .delete(password)
-                .subscribe(() -> {}, onError);
-        }).orElse(Disposable.empty());
     }
 
     @Override
