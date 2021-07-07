@@ -10,4 +10,5 @@
     <string name="menu_home">Home</string>
     <string name="menu_new_password">New Password</string>
     <string name="menu_edit_password">Edit Password</string>
+    <string name="menu_settings">Settings</string>
 </resources>

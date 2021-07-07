@@ -29,8 +29,11 @@ import tk.pokatomnik.suspicious.Utils.ObservablePrimitiveValueConnector;
 import tk.pokatomnik.suspicious.Utils.SearchViewOnChangeListener;
 import tk.pokatomnik.suspicious.databinding.FragmentHomeBinding;
 import tk.pokatomnik.suspicious.ui.editpassword.EditPasswordFragment;
+import tk.pokatomnik.suspicious.ui.settings.SettingsStore;
 
 public class HomeFragment extends DomainCaptureFragment {
+    private boolean useSmartSearch = false;
+
     private PasswordRemoveExecutor passwordRemoveExecutor;
 
     private FragmentHomeBinding binding;
@@ -52,6 +55,7 @@ public class HomeFragment extends DomainCaptureFragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        useSmartSearch = new SettingsStore(getContext()).isUseSmartSearch();
         passwordsExtractor = new PasswordsExtractor(getActivity());
         passRecycleViewManager = new PasswordsRecyclerViewManager(binding.recyclerView, getContext());
 
@@ -65,7 +69,7 @@ public class HomeFragment extends DomainCaptureFragment {
             .combineLatest(
                 searchTextObservable.observe().distinctUntilChanged(),
                 passwordsExtractor.getPasswordsObservable().distinctUntilChanged(),
-                this::applyFuzzySearch
+                this::applySearch
             )
             .subscribe((results) -> {
                 Optional.ofNullable(getActivity()).ifPresent((activity) -> {
@@ -134,6 +138,12 @@ public class HomeFragment extends DomainCaptureFragment {
     }
 
     private List<Password> applySearch(String searchString, List<Password> source) {
+        return useSmartSearch
+            ? applyFuzzySearch(searchString, source)
+            : applySimpleSearch(searchString, source);
+    }
+
+    private List<Password> applySimpleSearch(String searchString, List<Password> source) {
         final Matcher<Password> includeMatcher = new IncludeMatcher<>((query, password) -> {
             final String matchLower = query.toLowerCase();
             final boolean matchDomain = password.getDomain().toLowerCase().contains(matchLower);

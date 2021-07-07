@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
@@ -17,21 +16,29 @@
         android:gravity="center"
         android:orientation="vertical"
         android:paddingHorizontal="32dp"
-        android:paddingVertical="8dp">
+        android:paddingTop="8dp">
 
         <TextView
             android:id="@+id/domain"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="viewStart"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:singleLine="true" />
 
         <TextView
             android:id="@+id/user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elegantTextHeight="false"
-            android:textAlignment="viewStart" />
+            android:textAlignment="viewStart"
+            android:singleLine="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/lightgrey" />
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton

@@ -2,6 +2,7 @@ package tk.pokatomnik.suspicious;
 
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -20,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
 
+    private NavController navController;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,10 +36,12 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_add_password, R.id.nav_edit_password)
-                .setOpenableLayout(drawer)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+            R.id.nav_home,
+            R.id.nav_add_password,
+            R.id.nav_edit_password,
+            R.id.nav_settings
+        ).setOpenableLayout(drawer).build();
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
     }
@@ -53,5 +58,15 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_settings) {
+            navController.navigate(R.id.nav_settings);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

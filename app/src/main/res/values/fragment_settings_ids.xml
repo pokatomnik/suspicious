@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title">Settings</string>
+    <string name="settings_password_generator_section_title">Password Generator Preferences</string>
+    <string name="settings_password_generator_use_symbols">Use Symbols</string>
+    <string name="settings_password_generator_use_digits">Use Digits</string>
+    <string name="settings_password_length">Password Length</string>
+    <string name="settings_search_section_title">Search Preferences</string>
+    <string name="settings_search_simple_search">Simple search</string>
+    <string name="settings_search_fuzzy_search">Smart search</string>
+</resources>

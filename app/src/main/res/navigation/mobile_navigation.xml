@@ -22,4 +22,10 @@
         android:name="tk.pokatomnik.suspicious.ui.editpassword.EditPasswordFragment"
         android:label="@string/menu_edit_password"
         tools:layout="@layout/fragment_password_form" />
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="tk.pokatomnik.suspicious.ui.settings.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>

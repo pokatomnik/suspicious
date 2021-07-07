@@ -14,8 +14,6 @@ import androidx.navigation.Navigation;
 
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -27,9 +25,10 @@ import tk.pokatomnik.suspicious.Utils.PasswordGenerator;
 import tk.pokatomnik.suspicious.Utils.TextViewOnChangeListener;
 import tk.pokatomnik.suspicious.Utils.ToastError;
 import tk.pokatomnik.suspicious.databinding.FragmentPasswordFormBinding;
+import tk.pokatomnik.suspicious.ui.settings.SettingsStore;
 
 public abstract class PasswordForm extends DomainCaptureFragment {
-    private final Iterator<String> passwordGenerator = new PasswordGenerator(true, true, 12).iterator();
+    private Iterator<String> passwordGenerator;
 
     private FragmentPasswordFormBinding binding;
 
@@ -44,8 +43,17 @@ public abstract class PasswordForm extends DomainCaptureFragment {
     ) {
         binding = FragmentPasswordFormBinding.inflate(inflater, container, false);
         binding.passwordFormTitle.setText(getTitle());
-        setupListeners();
         return binding.getRoot();
+    }
+
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        setupListeners();
+        final SettingsStore settingsStore = new SettingsStore(getContext());
+        passwordGenerator = new PasswordGenerator(
+            settingsStore.isUseDigits(),
+            settingsStore.isUseSymbols(),
+            settingsStore.passwordLength()
+        ).iterator();
     }
 
     protected abstract String getTitle();
