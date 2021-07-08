@@ -1,5 +1,8 @@
 package tk.pokatomnik.suspicious.ui.home;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +51,9 @@ public class HomeFragment extends DomainCaptureFragment {
     private Disposable passwordClickSubscription;
 
     @Nullable
+    private Disposable longPasswordClickSubscription;
+
+    @Nullable
     private Disposable passwordRemoveClickSubscription;
 
     @Nullable
@@ -84,6 +90,10 @@ public class HomeFragment extends DomainCaptureFragment {
         passwordClickSubscription = passRecycleViewManager
             .getClickSubject()
             .subscribe(this::handlePasswordClick);
+
+        longPasswordClickSubscription = passRecycleViewManager
+            .getLongClickSubject()
+            .subscribe(this::handleLongPasswordClick);
 
         passwordRemoveClickSubscription = passRecycleViewManager
             .getClickRemoveSubject()
@@ -174,6 +184,18 @@ public class HomeFragment extends DomainCaptureFragment {
             Navigation
                 .findNavController(getActivity(), R.id.nav_host_fragment_content_main)
                 .navigate(R.id.nav_edit_password, bundle);
+        });
+    }
+
+    private void handleLongPasswordClick(Password password) {
+        Optional.ofNullable(getActivity()).ifPresent((activity) -> {
+            final ClipboardManager clipboard =
+                (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("(Copied password)", password.getPassword());
+            clipboard.setPrimaryClip(clip);
+
+            final String toastText = String.format("Password copied for %s", password.getDomain());
+            Toast.makeText(getContext(), toastText, Toast.LENGTH_SHORT).show();
         });
     }
 

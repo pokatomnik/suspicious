@@ -27,6 +27,7 @@ public abstract class GenericRecycleViewAdapter<T>
         public ViewHolder(
             LinearLayout layout,
             Consumer<T> onClick,
+            Consumer<T> onLongClick,
             Consumer<T> onRemoveClick,
             BiConsumer<T, LinearLayout> layoutFiller
         ) {
@@ -37,6 +38,10 @@ public abstract class GenericRecycleViewAdapter<T>
             final Button removeButton = layout.findViewById(R.id.clickable_remove);
             linearLayout.setOnClickListener((view) -> {
                 onClick.accept(item);
+            });
+            linearLayout.setOnLongClickListener(view -> {
+                onLongClick.accept(item);
+                return true;
             });
             removeButton.setOnClickListener((view) -> {
                 onRemoveClick.accept(item);
@@ -53,16 +58,20 @@ public abstract class GenericRecycleViewAdapter<T>
 
     private final Consumer<T> onClick;
 
+    private final Consumer<T> onLongClick;
+
     private final Consumer<T> onRemoveClick;
 
     public GenericRecycleViewAdapter(
         List<T> items,
-        Consumer<T> onClick,
-        Consumer<T> onRemoveClick
+        Consumer<T> initialOnClick,
+        Consumer<T> initialOnLongClick,
+        Consumer<T> initialOnRemoveClick
     ) {
         data = items;
-        this.onClick = onClick;
-        this.onRemoveClick = onRemoveClick;
+        onClick = initialOnClick;
+        onLongClick = initialOnLongClick;
+        onRemoveClick = initialOnRemoveClick;
     }
 
     protected abstract void fillLayout(T item, LinearLayout linearLayout);
@@ -75,7 +84,7 @@ public abstract class GenericRecycleViewAdapter<T>
     ) {
         final LinearLayout linearLayout = (LinearLayout) LayoutInflater.from(parent.getContext())
             .inflate(R.layout.layout_item, parent, false);
-        return new GenericRecycleViewAdapter.ViewHolder<>(linearLayout, onClick, onRemoveClick, this::fillLayout);
+        return new GenericRecycleViewAdapter.ViewHolder<>(linearLayout, onClick, onLongClick, onRemoveClick, this::fillLayout);
     }
 
     @Override

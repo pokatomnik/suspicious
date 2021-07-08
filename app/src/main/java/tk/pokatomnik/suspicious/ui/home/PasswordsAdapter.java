@@ -14,9 +14,10 @@ public class PasswordsAdapter extends GenericRecycleViewAdapter<Password> {
     public PasswordsAdapter(
         List<Password> passwordsData,
         Consumer<Password> onPasswordClick,
+        Consumer<Password> onLongPasswordClick,
         Consumer<Password> onRemoveClick
     ) {
-        super(passwordsData, onPasswordClick, onRemoveClick);
+        super(passwordsData, onPasswordClick, onLongPasswordClick, onRemoveClick);
     }
 
     @Override
