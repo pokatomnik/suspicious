@@ -2,7 +2,7 @@ package tk.pokatomnik.suspicious.ui.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 
 public class SettingsStore {
     private final static String KEY_USE_DIGITS = "preferences:useDigits";
