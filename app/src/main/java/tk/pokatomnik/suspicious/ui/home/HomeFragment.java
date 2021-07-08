@@ -130,6 +130,7 @@ public class HomeFragment extends DomainCaptureFragment {
         super.onDestroyView();
         binding = null;
         Optional.ofNullable(passwordClickSubscription).ifPresent(Disposable::dispose);
+        Optional.ofNullable(longPasswordClickSubscription).ifPresent(Disposable::dispose);
         Optional.ofNullable(passwordRemoveClickSubscription).ifPresent(Disposable::dispose);
         Optional.ofNullable(searchTextObservable).ifPresent(Disposable::dispose);
         Optional.ofNullable(searchPasswordsSubscription).ifPresent(Disposable::dispose);
