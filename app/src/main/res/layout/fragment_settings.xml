@@ -53,14 +53,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 android:gravity="center_vertical"
-                android:text="@string/settings_password_length" />
+                android:text="@string/settings_password_length"
+                android:labelFor="@+id/passwordLength"/>
 
             <EditText
                 android:id="@+id/passwordLength"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="number" />
+                android:importantForAutofill="no"
+                android:inputType="number"/>
 
             <TextView
                 android:layout_width="match_parent"
