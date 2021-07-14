@@ -61,7 +61,4 @@ dependencies {
 
     // Preferences compatibility
     implementation 'androidx.preference:preference:1.1.1'
-
-    // Google GSON library
-    implementation 'com.google.code.gson:gson:2.8.7'
 }

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="export_title">Export passwords</string>
-    <string name="export_csv_simple">Export to CSV</string>
-    <string name="export_json_simple">Export to JSON</string>
-    <string name="export_intent_caption">Export passwords to</string>
-    <string name="export_share_as_text">Export as text</string>
+    <string name="export_title">Export/import passwords</string>
+    <string name="export_csv">Export to CSV</string>
+    <string name="import_csv">Import from CSV</string>
 </resources>

@@ -11,5 +11,5 @@
     <string name="menu_new_password">New Password</string>
     <string name="menu_edit_password">Edit Password</string>
     <string name="menu_settings">Settings</string>
-    <string name="menu_export">Export passwords</string>
+    <string name="menu_export">Export/Import</string>
 </resources>
