@@ -141,7 +141,6 @@ public class Export extends Fragment {
             final String data = scanner.hasNext() ? scanner.next() : "";
             final List<Password> passwords = new CSVImporter().importFromString(data);
             importPasswords(passwords);
-            // TODO implement inserting passwords to a database
         } catch (IOException e) {
             displayToastInUIThread(importErrorMessage, Toast.LENGTH_LONG);
             e.printStackTrace();
