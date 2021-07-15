@@ -36,6 +36,7 @@
         android:clickable="true"
         android:contentDescription="@string/home_capture_button_content_description"
         android:src="@drawable/ic_baseline_photo_camera_24"
+        app:borderWidth="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.93"
