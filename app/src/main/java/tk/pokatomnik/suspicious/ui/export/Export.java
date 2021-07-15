@@ -32,6 +32,7 @@ import tk.pokatomnik.suspicious.databinding.FragmentExportBinding;
 
 public class Export extends Fragment {
     private final static String MIME_CSV = "text/csv";
+
     private final static String MIME_COMMA_SEPARATED_VALUES = "text/comma-separated-values";
 
     private FragmentExportBinding binding;

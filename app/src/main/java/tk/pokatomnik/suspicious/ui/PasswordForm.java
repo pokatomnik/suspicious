@@ -15,6 +15,7 @@ import androidx.navigation.Navigation;
 import java.util.Iterator;
 import java.util.Optional;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -121,12 +122,9 @@ public abstract class PasswordForm extends DomainCaptureFragment {
         );
 
         saveSubscription = postPassword(password)
-            .subscribeOn(Schedulers.newThread())
-            .subscribe(() -> {
-                Optional.ofNullable(getActivity()).ifPresent((activity) -> {
-                    activity.runOnUiThread(this::navigateHome);
-                });
-            }, new ToastError<>(getActivity(), "Can't save password because of error"));
+            .subscribeOn(Schedulers.single())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(this::navigateHome, new ToastError<>(getActivity(), "Can't save password because of error"));
     }
 
     protected abstract Completable postPassword(Password password);
