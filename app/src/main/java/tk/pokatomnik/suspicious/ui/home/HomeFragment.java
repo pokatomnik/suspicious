@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import tk.pokatomnik.suspicious.CustomFragments.DomainCaptureFragment;
@@ -77,13 +78,8 @@ public class HomeFragment extends DomainCaptureFragment {
                 passwordsExtractor.getPasswordsObservable().distinctUntilChanged(),
                 this::applySearch
             )
-            .subscribe((results) -> {
-                Optional.ofNullable(getActivity()).ifPresent((activity) -> {
-                    activity.runOnUiThread(() -> {
-                        passRecycleViewManager.updatePasswords(results);
-                    });
-                });
-            });
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(passRecycleViewManager::updatePasswords);
 
         binding.floatingActionButton.setOnClickListener((View unused) -> capture());
 

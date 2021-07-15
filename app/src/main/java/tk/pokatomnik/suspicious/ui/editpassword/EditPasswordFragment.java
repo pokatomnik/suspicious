@@ -11,6 +11,7 @@ import androidx.navigation.Navigation;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -46,8 +47,9 @@ public class EditPasswordFragment extends PasswordForm {
                     .getPasswordDatabase()
                     .passwordDAO()
                     .getByUID(passwordID)
-                    .subscribeOn(Schedulers.newThread())
-                    .subscribe(this::handlePassword, this::handleError);
+                    .subscribeOn(Schedulers.single())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this::onGetPassword, this::handleError);
             }).orElse(Disposable.empty());
         });
 
@@ -57,14 +59,6 @@ public class EditPasswordFragment extends PasswordForm {
     @Override
     protected String getTitle() {
         return "Edit Password";
-    }
-
-    private void handlePassword(Password password) {
-        Optional.ofNullable(getActivity()).ifPresent((activity) -> {
-            activity.runOnUiThread(() -> {
-                onGetPassword(password);
-            });
-        });
     }
 
     private void handleError(Throwable error) {

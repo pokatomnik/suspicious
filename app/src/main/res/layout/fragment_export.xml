@@ -24,25 +24,19 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/shareAsText"
+        <Button
+            android:id="@+id/exportCSV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="@string/export_share_as_text" />
+            android:text="@string/export_csv" />
 
         <Button
-            android:id="@+id/exportCSVSimple"
+            android:id="@+id/importCSV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="@string/export_csv_simple" />
+            android:text="@string/import_csv" />
 
-        <Button
-            android:id="@+id/exportJSONSimple"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/export_json_simple" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
@@ -38,11 +39,8 @@ public class PasswordsExtractor implements Disposable {
                 .passwordDAO()
                 .getAll()
                 .subscribeOn(Schedulers.newThread())
-                .subscribe((result) -> {
-                    activity.runOnUiThread(() -> {
-                        publishSubject.onNext(result);
-                    });
-                }, new ToastError<>(fragmentActivity, "Error getting passwords"));
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(publishSubject::onNext, new ToastError<>(fragmentActivity, "Error getting passwords"));
         }).orElse(Disposable.empty());
     }
 
