@@ -1,8 +1,11 @@
-package tk.pokatomnik.suspicious.Entities;
+package tk.pokatomnik.suspicious.entities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+import tk.pokatomnik.suspicious.utils.encryption.BlowfishEncryption;
+import tk.pokatomnik.suspicious.utils.encryption.TextEncryption;
 
 @Entity
 public final class Password {

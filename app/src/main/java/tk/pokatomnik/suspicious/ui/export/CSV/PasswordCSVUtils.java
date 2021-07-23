@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import tk.pokatomnik.suspicious.Entities.Password;
+import tk.pokatomnik.suspicious.entities.Password;
 
 public class PasswordCSVUtils {
     private static final String ROW_DELIMITER = "\n";

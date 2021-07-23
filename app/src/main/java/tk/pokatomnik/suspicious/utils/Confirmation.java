@@ -1,8 +1,7 @@
-package tk.pokatomnik.suspicious.Utils;
+package tk.pokatomnik.suspicious.utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 
 import androidx.annotation.NonNull;
 

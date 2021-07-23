@@ -1,9 +1,8 @@
-package tk.pokatomnik.suspicious.Utils;
+package tk.pokatomnik.suspicious.utils;
 
 import androidx.annotation.NonNull;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.OptionalInt;
 import java.util.Random;
 

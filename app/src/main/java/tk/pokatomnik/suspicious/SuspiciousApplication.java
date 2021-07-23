@@ -5,24 +5,34 @@ import android.content.Context;
 
 import androidx.room.Room;
 
-import tk.pokatomnik.suspicious.Storage.PasswordDatabase;
+import tk.pokatomnik.suspicious.storage.PasswordDatabase;
+import tk.pokatomnik.suspicious.storage.PasswordDatabaseService;
+import tk.pokatomnik.suspicious.utils.encryption.BlowfishEncryption;
+import tk.pokatomnik.suspicious.utils.encryption.TextEncryption;
 
 public class SuspiciousApplication extends Application {
-    private PasswordDatabase passwordDatabase;
+    private PasswordDatabaseService passwordDatabaseService;
 
-    public PasswordDatabase getPasswordDatabase() {
-        if (passwordDatabase == null) {
+    private final TextEncryption encryption = new BlowfishEncryption();
+
+    public PasswordDatabaseService getPasswordDatabaseService() {
+        if (passwordDatabaseService == null) {
             final Context applicationContext = getApplicationContext();
 
             if (applicationContext == null) {
                 throw new NullPointerException("getPasswordDatabase called too early: application isn't initialized yet");
             }
 
-            passwordDatabase = Room
-                .databaseBuilder(getApplicationContext(), PasswordDatabase.class, "passwords")
+            final PasswordDatabase passwordDatabase = Room
+                .databaseBuilder(getApplicationContext(), PasswordDatabase.class, "passwords.db")
                 .build();
+            passwordDatabaseService = new PasswordDatabaseService(passwordDatabase, this::getEncryptionService);
         }
 
-        return passwordDatabase;
+        return passwordDatabaseService;
+    }
+
+    public TextEncryption getEncryptionService() {
+        return encryption;
     }
 }

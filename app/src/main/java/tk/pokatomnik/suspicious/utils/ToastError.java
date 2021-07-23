@@ -1,4 +1,4 @@
-package tk.pokatomnik.suspicious.Utils;
+package tk.pokatomnik.suspicious.utils;
 
 import android.app.Activity;
 import android.widget.Toast;

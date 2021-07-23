@@ -1,4 +1,4 @@
-package tk.pokatomnik.suspicious.Utils;
+package tk.pokatomnik.suspicious.utils;
 
 import java.util.Objects;
 import java.util.function.Consumer;

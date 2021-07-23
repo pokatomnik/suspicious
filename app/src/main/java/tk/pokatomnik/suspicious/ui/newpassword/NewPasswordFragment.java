@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import java.util.Optional;
 
 import io.reactivex.rxjava3.core.Completable;
-import tk.pokatomnik.suspicious.Entities.Password;
+import tk.pokatomnik.suspicious.entities.Password;
 import tk.pokatomnik.suspicious.SuspiciousApplication;
 import tk.pokatomnik.suspicious.ui.PasswordForm;
 
@@ -33,7 +33,7 @@ public class NewPasswordFragment extends PasswordForm {
     protected Completable postPassword(Password password) {
         return Optional.ofNullable(getActivity()).map((activity) -> {
             final SuspiciousApplication application = (SuspiciousApplication) activity.getApplication();
-            return application.getPasswordDatabase().passwordDAO().insert(password);
+            return application.getPasswordDatabaseService().insert(password);
         }).orElse(Completable.never());
     }
 }
