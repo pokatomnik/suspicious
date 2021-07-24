@@ -9,11 +9,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import tk.pokatomnik.suspicious.storage.PasswordDatabaseService;
 import tk.pokatomnik.suspicious.ui.settings.SettingsStore;
-import tk.pokatomnik.suspicious.utils.InputDialog;
+import tk.pokatomnik.suspicious.utils.inputdialog.NewPasswordInputDialog;
+import tk.pokatomnik.suspicious.utils.inputdialog.PasswordInputDialog;
 import tk.pokatomnik.suspicious.utils.MD5;
-import tk.pokatomnik.suspicious.utils.ToastError;
 import tk.pokatomnik.suspicious.utils.encryption.TextEncryption;
 
 public class SplashScreenActivity extends AppCompatActivity {
@@ -44,12 +43,24 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void handleFirstRun() {
-        final String dialogTitle = "Set up master password";
-        new InputDialog(dialogTitle, this).ask((newMasterKey) -> {
+        askNewMasterPasswordUntilCorrect((newMasterKey) -> {
             final String masterKeyHash = new MD5(newMasterKey).toString();
             settingsStore.setMasterPasswordHash(masterKeyHash);
             passwordDatabaseService().notifyMasterKeyChanged(newMasterKey);
             startMainActivity();
+        });
+    }
+
+    private void askNewMasterPasswordUntilCorrect(Consumer<String> consumer) {
+        final String dialogTitle = "Set up master password";
+        new NewPasswordInputDialog(dialogTitle, this).ask((error, newMasterKey) -> {
+            if (error == null) {
+                consumer.accept(newMasterKey);
+            } else {
+                final String errorText = error.getMessage();
+                Toast.makeText(this, errorText, Toast.LENGTH_LONG).show();
+                askNewMasterPasswordUntilCorrect(consumer);
+            }
         });
     }
 
@@ -62,12 +73,14 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     private void askMasterPasswordUtilCorrect(String existingHash, Consumer<String> consumer) {
         final String dialogTitle = "Specify master password";
-        new InputDialog(dialogTitle, this).ask((masterKey) -> {
+        new PasswordInputDialog(dialogTitle, this).ask((error, masterKey) -> {
             final String possibleHash = new MD5(masterKey).toString();
             if (existingHash.equals(possibleHash)) {
                 consumer.accept(masterKey);
             } else {
-                Toast.makeText(this, "Incorrect master password", Toast.LENGTH_LONG).show();
+                final String errorText = Optional.ofNullable(error).map(Throwable::getMessage)
+                    .orElse("Incorrect master password");
+                Toast.makeText(this, errorText, Toast.LENGTH_LONG).show();
                 askMasterPasswordUtilCorrect(existingHash, consumer);
             }
         });
