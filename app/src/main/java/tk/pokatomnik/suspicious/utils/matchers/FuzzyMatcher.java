@@ -1,4 +1,4 @@
-package tk.pokatomnik.suspicious.Utils.Matchers;
+package tk.pokatomnik.suspicious.utils.matchers;
 
 import org.apache.commons.text.similarity.FuzzyScore;
 

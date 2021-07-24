@@ -1,7 +1,5 @@
 package tk.pokatomnik.suspicious.ui.home;
 
-import android.content.Context;
-
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
@@ -13,9 +11,9 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
-import tk.pokatomnik.suspicious.Entities.Password;
+import tk.pokatomnik.suspicious.entities.Password;
 import tk.pokatomnik.suspicious.SuspiciousApplication;
-import tk.pokatomnik.suspicious.Utils.ToastError;
+import tk.pokatomnik.suspicious.utils.ToastError;
 
 public class PasswordsExtractor implements Disposable {
     private final FragmentActivity fragmentActivity;
@@ -35,8 +33,7 @@ public class PasswordsExtractor implements Disposable {
         fetchPasswordsSubscription = Optional.ofNullable(fragmentActivity).map((activity) -> {
             final SuspiciousApplication application = (SuspiciousApplication) activity.getApplication();
             return application
-                .getPasswordDatabase()
-                .passwordDAO()
+                .getPasswordDatabaseService()
                 .getAll()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

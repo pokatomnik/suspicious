@@ -9,7 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Consumer;
-import tk.pokatomnik.suspicious.Entities.Password;
+import tk.pokatomnik.suspicious.entities.Password;
 import tk.pokatomnik.suspicious.SuspiciousApplication;
 
 public class PasswordRemoveExecutor implements Disposable {
@@ -65,8 +65,7 @@ public class PasswordRemoveExecutor implements Disposable {
 
     private void removePasswordFromDB(Password password) {
         passwordRemoveSubscription = application
-            .getPasswordDatabase()
-            .passwordDAO()
+            .getPasswordDatabaseService()
             .delete(password)
             .subscribe(() -> {}, onError);
     }

@@ -1,4 +1,4 @@
-package tk.pokatomnik.suspicious.CustomFragments;
+package tk.pokatomnik.suspicious.customfragments;
 
 import java.net.URI;
 

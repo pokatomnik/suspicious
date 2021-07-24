@@ -3,7 +3,7 @@ package tk.pokatomnik.suspicious.ui.export;
 import java.util.ArrayList;
 import java.util.List;
 
-import tk.pokatomnik.suspicious.Entities.Password;
+import tk.pokatomnik.suspicious.entities.Password;
 import tk.pokatomnik.suspicious.ui.export.CSV.PasswordCSVUtils;
 
 public class CSVImporter {

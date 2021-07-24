@@ -2,6 +2,8 @@ package tk.pokatomnik.suspicious.ui.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
 public class SettingsStore {
@@ -12,6 +14,8 @@ public class SettingsStore {
     private final static String KEY_SMART_SEARCH = "preferences:useSmartSearch";
 
     private final static String KEY_PASSWORD_LENGTH = "preferences:passwordLength";
+
+    private final static String KEY_MASTER_PASSWORD_HASH = "preferences:masterPassword";
 
     private final SharedPreferences sharedPreferences;
 
@@ -49,5 +53,14 @@ public class SettingsStore {
 
     public void setPasswordLength(int passwordLength) {
         sharedPreferences.edit().putInt(KEY_PASSWORD_LENGTH, passwordLength).apply();
+    }
+
+    @Nullable
+    public String getMasterPasswordHash() {
+        return sharedPreferences.getString(KEY_MASTER_PASSWORD_HASH, null);
+    }
+
+    public void setMasterPasswordHash(String masterPasswordHash) {
+        sharedPreferences.edit().putString(KEY_MASTER_PASSWORD_HASH, masterPasswordHash).apply();
     }
 }

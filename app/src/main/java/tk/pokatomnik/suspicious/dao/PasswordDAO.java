@@ -1,4 +1,4 @@
-package tk.pokatomnik.suspicious.DAO;
+package tk.pokatomnik.suspicious.dao;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -11,21 +11,15 @@ import java.util.List;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Single;
-import tk.pokatomnik.suspicious.Entities.Password;
+import tk.pokatomnik.suspicious.entities.Password;
 
 @Dao
 public interface PasswordDAO {
     @Query("SELECT * FROM password")
     Single<List<Password>> getAll();
 
-    @Query("SELECT * from password WHERE uid IN (:userIds)")
-    Single<List<Password>> loadAllByIds(int[] userIds);
-
     @Query("SELECT * FROM password WHERE uid = :uid")
     Single<Password> getByUID(int uid);
-
-    @Query("SELECT * FROM password WHERE domain LIKE :domainParam LIMIT 1")
-    Single<Password> findByDomain(String domainParam);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Completable insert(Password... passwords);

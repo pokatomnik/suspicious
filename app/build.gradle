@@ -59,6 +59,10 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.commons/commons-text
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
 
+    // https://mvnrepository.com/artifact/commons-codec/commons-codec
+    implementation group: 'commons-codec', name: 'commons-codec', version: '1.4'
+
+
     // Preferences compatibility
     implementation 'androidx.preference:preference:1.1.1'
 

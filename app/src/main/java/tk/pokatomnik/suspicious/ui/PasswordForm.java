@@ -19,12 +19,12 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import tk.pokatomnik.suspicious.CustomFragments.DomainCaptureFragment;
-import tk.pokatomnik.suspicious.Entities.Password;
+import tk.pokatomnik.suspicious.customfragments.DomainCaptureFragment;
+import tk.pokatomnik.suspicious.entities.Password;
 import tk.pokatomnik.suspicious.R;
-import tk.pokatomnik.suspicious.Utils.PasswordGenerator;
-import tk.pokatomnik.suspicious.Utils.TextViewOnChangeListener;
-import tk.pokatomnik.suspicious.Utils.ToastError;
+import tk.pokatomnik.suspicious.utils.PasswordGenerator;
+import tk.pokatomnik.suspicious.utils.TextViewOnChangeListener;
+import tk.pokatomnik.suspicious.utils.ToastError;
 import tk.pokatomnik.suspicious.databinding.FragmentPasswordFormBinding;
 import tk.pokatomnik.suspicious.ui.settings.SettingsStore;
 

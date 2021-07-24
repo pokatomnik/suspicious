@@ -16,10 +16,10 @@ import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import tk.pokatomnik.suspicious.Entities.Password;
+import tk.pokatomnik.suspicious.entities.Password;
 import tk.pokatomnik.suspicious.R;
 import tk.pokatomnik.suspicious.SuspiciousApplication;
-import tk.pokatomnik.suspicious.Utils.ToastError;
+import tk.pokatomnik.suspicious.utils.ToastError;
 import tk.pokatomnik.suspicious.ui.PasswordForm;
 
 public class EditPasswordFragment extends PasswordForm {
@@ -44,8 +44,7 @@ public class EditPasswordFragment extends PasswordForm {
             loadSubscription = Optional.ofNullable(getActivity()).map((activity) -> {
                 final SuspiciousApplication application = (SuspiciousApplication) activity.getApplication();
                 return application
-                    .getPasswordDatabase()
-                    .passwordDAO()
+                    .getPasswordDatabaseService()
                     .getByUID(passwordID)
                     .subscribeOn(Schedulers.single())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -84,7 +83,7 @@ public class EditPasswordFragment extends PasswordForm {
 
         return Optional.ofNullable(getActivity()).map((activity) -> {
             final SuspiciousApplication application = (SuspiciousApplication) activity.getApplication();
-            return application.getPasswordDatabase().passwordDAO().update(password);
+            return application.getPasswordDatabaseService().update(password);
         }).orElse(Completable.never());
     }
 

@@ -22,11 +22,10 @@ import java.util.Optional;
 import java.util.Scanner;
 
 import io.reactivex.rxjava3.core.Completable;
-import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import tk.pokatomnik.suspicious.Entities.Password;
+import tk.pokatomnik.suspicious.entities.Password;
 import tk.pokatomnik.suspicious.SuspiciousApplication;
 import tk.pokatomnik.suspicious.databinding.FragmentExportBinding;
 
@@ -83,7 +82,7 @@ public class Export extends Fragment {
     private Single<List<Password>> getAllPasswords() {
         return Optional.ofNullable(getActivity()).map((activity) -> {
             final SuspiciousApplication application = (SuspiciousApplication) activity.getApplication();
-            return application.getPasswordDatabase().passwordDAO().getAll().subscribeOn(Schedulers.single());
+            return application.getPasswordDatabaseService().getAll().subscribeOn(Schedulers.single());
         }).orElse(Single.never());
     }
 
@@ -113,7 +112,7 @@ public class Export extends Fragment {
         importSubscription = Optional.ofNullable(getActivity()).map((activity) -> {
             final SuspiciousApplication application = (SuspiciousApplication) activity.getApplication();
             final Password[] passwordsArray = passwords.toArray(new Password[0]);
-            return application.getPasswordDatabase().passwordDAO().insert(passwordsArray);
+            return application.getPasswordDatabaseService().insert(passwordsArray);
         }).orElse(Completable.never()).subscribeOn(Schedulers.single()).subscribe(() -> {
             displayToastInUIThread("Import finished", Toast.LENGTH_LONG);
         }, (e) -> {

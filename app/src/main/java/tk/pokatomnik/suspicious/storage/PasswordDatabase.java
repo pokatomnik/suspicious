@@ -1,10 +1,10 @@
-package tk.pokatomnik.suspicious.Storage;
+package tk.pokatomnik.suspicious.storage;
 
 import androidx.room.Database;
 import androidx.room.RoomDatabase;
 
-import tk.pokatomnik.suspicious.DAO.PasswordDAO;
-import tk.pokatomnik.suspicious.Entities.Password;
+import tk.pokatomnik.suspicious.dao.PasswordDAO;
+import tk.pokatomnik.suspicious.entities.Password;
 
 @Database(entities = {Password.class}, version = 1, exportSchema = false)
 public abstract class PasswordDatabase extends RoomDatabase {
