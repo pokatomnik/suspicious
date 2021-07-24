@@ -6,7 +6,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import tk.pokatomnik.suspicious.ui.settings.SettingsStore;
@@ -74,12 +73,19 @@ public class SplashScreenActivity extends AppCompatActivity {
     private void askMasterPasswordUtilCorrect(String existingHash, Consumer<String> consumer) {
         final String dialogTitle = "Specify master password";
         new PasswordInputDialog(dialogTitle, this).ask((error, masterKey) -> {
-            final String possibleHash = new MD5(masterKey).toString();
-            if (existingHash.equals(possibleHash)) {
-                consumer.accept(masterKey);
+            if (error == null) {
+                final String possibleHash = new MD5(masterKey).toString();
+                final boolean hashesMatch = existingHash.equals(possibleHash);
+
+                if (hashesMatch) {
+                    consumer.accept(masterKey);
+                } else {
+                    final String errorText = "Incorrect master password";
+                    Toast.makeText(this, errorText, Toast.LENGTH_LONG).show();
+                    askMasterPasswordUtilCorrect(existingHash, consumer);
+                }
             } else {
-                final String errorText = Optional.ofNullable(error).map(Throwable::getMessage)
-                    .orElse("Incorrect master password");
+                final String errorText = error.getMessage();
                 Toast.makeText(this, errorText, Toast.LENGTH_LONG).show();
                 askMasterPasswordUtilCorrect(existingHash, consumer);
             }
