@@ -5,10 +5,11 @@ import android.content.Context;
 
 import androidx.room.Room;
 
-import tk.pokatomnik.suspicious.storage.PasswordDatabase;
-import tk.pokatomnik.suspicious.storage.PasswordDatabaseService;
-import tk.pokatomnik.suspicious.utils.encryption.BlowfishEncryption;
-import tk.pokatomnik.suspicious.utils.encryption.TextEncryption;
+import tk.pokatomnik.suspicious.services.database.PasswordDatabase;
+import tk.pokatomnik.suspicious.services.database.PasswordDatabaseService;
+import tk.pokatomnik.suspicious.services.database.PasswordDatabaseServiceDependencies;
+import tk.pokatomnik.suspicious.services.encryption.BlowfishEncryption;
+import tk.pokatomnik.suspicious.services.encryption.TextEncryption;
 
 public class SuspiciousApplication extends Application {
     private PasswordDatabaseService passwordDatabaseService;
@@ -26,7 +27,10 @@ public class SuspiciousApplication extends Application {
             final PasswordDatabase passwordDatabase = Room
                 .databaseBuilder(getApplicationContext(), PasswordDatabase.class, "passwords.db")
                 .build();
-            passwordDatabaseService = new PasswordDatabaseService(passwordDatabase, this::getEncryptionService);
+            passwordDatabaseService = new PasswordDatabaseService(
+                passwordDatabase,
+                new PasswordDatabaseServiceDependencies(encryption::encrypt,encryption::decrypt)
+            );
         }
 
         return passwordDatabaseService;

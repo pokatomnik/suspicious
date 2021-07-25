@@ -6,7 +6,7 @@ import android.widget.TextView;
 import java.util.List;
 import java.util.function.Consumer;
 
-import tk.pokatomnik.suspicious.entities.Password;
+import tk.pokatomnik.suspicious.services.database.entities.Password;
 import tk.pokatomnik.suspicious.GenericRecycleViewAdapter;
 import tk.pokatomnik.suspicious.R;
 
