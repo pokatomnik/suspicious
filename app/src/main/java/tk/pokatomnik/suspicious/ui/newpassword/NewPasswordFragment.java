@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import java.util.Optional;
 
 import io.reactivex.rxjava3.core.Completable;
-import tk.pokatomnik.suspicious.entities.Password;
+import tk.pokatomnik.suspicious.services.database.entities.Password;
 import tk.pokatomnik.suspicious.SuspiciousApplication;
 import tk.pokatomnik.suspicious.ui.PasswordForm;
 

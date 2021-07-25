@@ -11,7 +11,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
-import tk.pokatomnik.suspicious.entities.Password;
+import tk.pokatomnik.suspicious.services.database.entities.Password;
 import tk.pokatomnik.suspicious.SuspiciousApplication;
 import tk.pokatomnik.suspicious.utils.ToastError;
 

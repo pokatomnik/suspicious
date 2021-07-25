@@ -12,7 +12,7 @@ import tk.pokatomnik.suspicious.ui.settings.SettingsStore;
 import tk.pokatomnik.suspicious.utils.inputdialog.NewPasswordInputDialog;
 import tk.pokatomnik.suspicious.utils.inputdialog.PasswordInputDialog;
 import tk.pokatomnik.suspicious.utils.MD5;
-import tk.pokatomnik.suspicious.utils.encryption.TextEncryption;
+import tk.pokatomnik.suspicious.services.encryption.TextEncryption;
 
 public class SplashScreenActivity extends AppCompatActivity {
     private SettingsStore settingsStore;

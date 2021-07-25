@@ -22,7 +22,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import tk.pokatomnik.suspicious.customfragments.DomainCaptureFragment;
-import tk.pokatomnik.suspicious.entities.Password;
+import tk.pokatomnik.suspicious.services.database.entities.Password;
 import tk.pokatomnik.suspicious.R;
 import tk.pokatomnik.suspicious.SuspiciousApplication;
 import tk.pokatomnik.suspicious.utils.Confirmation;

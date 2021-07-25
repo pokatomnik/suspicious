@@ -1,4 +1,4 @@
-package tk.pokatomnik.suspicious.utils.encryption;
+package tk.pokatomnik.suspicious.services.encryption;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;

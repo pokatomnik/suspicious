@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import tk.pokatomnik.suspicious.entities.Password;
+import tk.pokatomnik.suspicious.services.database.entities.Password;
 
 class PasswordCSVHeaderSet {
     private static final String DOMAIN = "DOMAIN";

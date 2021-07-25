@@ -20,7 +20,7 @@ import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import tk.pokatomnik.suspicious.customfragments.DomainCaptureFragment;
-import tk.pokatomnik.suspicious.entities.Password;
+import tk.pokatomnik.suspicious.services.database.entities.Password;
 import tk.pokatomnik.suspicious.R;
 import tk.pokatomnik.suspicious.utils.PasswordGenerator;
 import tk.pokatomnik.suspicious.utils.TextViewOnChangeListener;
