@@ -13,13 +13,16 @@ import androidx.fragment.app.Fragment;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
+import java.util.Optional;
 
+import tk.pokatomnik.suspicious.SuspiciousApplication;
 import tk.pokatomnik.suspicious.databinding.FragmentSettingsBinding;
+import tk.pokatomnik.suspicious.services.settings.Settings;
 
 public class SettingsFragment extends Fragment {
     private FragmentSettingsBinding binding;
 
-    private SettingsStore settingsStore;
+    private Settings settingsStore;
 
     @Override
     public View onCreateView(
@@ -39,13 +42,18 @@ public class SettingsFragment extends Fragment {
         @Nullable Bundle savedInstanceState
     ) {
         super.onViewCreated(view, savedInstanceState);
-        settingsStore = new SettingsStore(getContext());
+        settingsStore = Optional.ofNullable(getActivity()).map((activity) -> {
+            final SuspiciousApplication application = (SuspiciousApplication) activity.getApplication();
+            return application.getSettingsService();
+        }).orElse(null);
 
-        binding.useDigits.setChecked(settingsStore.isUseDigits());
-        binding.useSymbols.setChecked(settingsStore.isUseSymbols());
-        binding.useSimpleSearch.setChecked(!settingsStore.isUseSmartSearch());
-        binding.useFuzzySearch.setChecked(settingsStore.isUseSmartSearch());
-        binding.passwordLength.setText(String.format(Locale.US, "%d", settingsStore.passwordLength()));
+        if (settingsStore != null) {
+            binding.useDigits.setChecked(settingsStore.isUseDigits());
+            binding.useSymbols.setChecked(settingsStore.isUseSymbols());
+            binding.useSimpleSearch.setChecked(!settingsStore.isUseSmartSearch());
+            binding.useFuzzySearch.setChecked(settingsStore.isUseSmartSearch());
+            binding.passwordLength.setText(String.format(Locale.US, "%d", settingsStore.passwordLength()));
+        }
 
         binding.useDigits.setOnCheckedChangeListener(this::handleUseDigitsChange);
         binding.useSymbols.setOnCheckedChangeListener(this::handleUseSymbolsChange);

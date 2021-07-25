@@ -1,5 +1,10 @@
 package tk.pokatomnik.suspicious.services.database;
 
+import android.content.Context;
+
+import androidx.annotation.Nullable;
+import androidx.room.Room;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,16 +14,29 @@ import io.reactivex.rxjava3.core.Single;
 import tk.pokatomnik.suspicious.services.database.entities.Password;
 
 public class PasswordDatabaseService {
-    private final PasswordDatabase passwordDatabase;
+    @Nullable
+    private PasswordDatabase pdb = null;
 
     private final PasswordDatabaseServiceDependencies deps;
 
-    public PasswordDatabaseService(
-        PasswordDatabase initialPasswordDatabase,
-        PasswordDatabaseServiceDependencies initialDeps
-    ) {
-        passwordDatabase = initialPasswordDatabase;
+    public PasswordDatabaseService(PasswordDatabaseServiceDependencies initialDeps) {
         deps = initialDeps;
+    }
+
+    private PasswordDatabase getPasswordDatabase() {
+        if (pdb != null) {
+            return pdb;
+        }
+
+        final Context context = deps.getContext();
+
+        if (context == null) {
+            throw new NullPointerException("getPasswordDatabase called too early: application isn't initialized yet");
+        }
+
+        pdb = Room.databaseBuilder(context, PasswordDatabase.class, "passwords.db").build();
+
+        return pdb;
     }
 
     private Password encryptPassword(Password password) {
@@ -44,13 +62,13 @@ public class PasswordDatabaseService {
     }
 
     public Single<List<Password>> getAll() {
-        return passwordDatabase.passwordDAO().getAll().map((passwords -> {
+        return getPasswordDatabase().passwordDAO().getAll().map((passwords -> {
             return passwords.stream().map(this::decryptPassword).collect(Collectors.toList());
         }));
     }
 
     public Single<Password> getByUID(int uid) {
-        return passwordDatabase.passwordDAO().getByUID(uid).map((this::decryptPassword));
+        return getPasswordDatabase().passwordDAO().getByUID(uid).map((this::decryptPassword));
     }
 
     public Completable insert(Password... passwords) {
@@ -58,16 +76,16 @@ public class PasswordDatabaseService {
             .stream(passwords)
             .map(this::encryptPassword)
             .toArray(Password[]::new);
-        return passwordDatabase.passwordDAO().insert(encryptedPasswords);
+        return getPasswordDatabase().passwordDAO().insert(encryptedPasswords);
     }
 
     public Completable delete(Password password) {
         final Password encryptedPassword = encryptPassword(password);
-        return passwordDatabase.passwordDAO().delete(encryptedPassword);
+        return getPasswordDatabase().passwordDAO().delete(encryptedPassword);
     }
 
     public Completable update(Password password) {
         final Password encryptedPassword = encryptPassword(password);
-        return passwordDatabase.passwordDAO().update(encryptedPassword);
+        return getPasswordDatabase().passwordDAO().update(encryptedPassword);
     }
 }
