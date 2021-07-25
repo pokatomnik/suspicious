@@ -19,14 +19,15 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import tk.pokatomnik.suspicious.SuspiciousApplication;
 import tk.pokatomnik.suspicious.customfragments.DomainCaptureFragment;
 import tk.pokatomnik.suspicious.services.database.entities.Password;
 import tk.pokatomnik.suspicious.R;
+import tk.pokatomnik.suspicious.services.settings.Settings;
 import tk.pokatomnik.suspicious.utils.PasswordGenerator;
 import tk.pokatomnik.suspicious.utils.TextViewOnChangeListener;
 import tk.pokatomnik.suspicious.utils.ToastError;
 import tk.pokatomnik.suspicious.databinding.FragmentPasswordFormBinding;
-import tk.pokatomnik.suspicious.ui.settings.SettingsStore;
 
 public abstract class PasswordForm extends DomainCaptureFragment {
     private Iterator<String> passwordGenerator;
@@ -49,12 +50,15 @@ public abstract class PasswordForm extends DomainCaptureFragment {
 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         setupListeners();
-        final SettingsStore settingsStore = new SettingsStore(getContext());
-        passwordGenerator = new PasswordGenerator(
-            settingsStore.isUseDigits(),
-            settingsStore.isUseSymbols(),
-            settingsStore.passwordLength()
-        ).iterator();
+        Optional.ofNullable(getActivity()).ifPresent((activity) -> {
+           final SuspiciousApplication application = (SuspiciousApplication) activity.getApplication();
+           final Settings settingsService = application.getSettingsService();
+            passwordGenerator = new PasswordGenerator(
+                settingsService.isUseDigits(),
+                settingsService.isUseSymbols(),
+                settingsService.passwordLength()
+            ).iterator();
+        });
     }
 
     protected abstract String getTitle();

@@ -25,6 +25,7 @@ import tk.pokatomnik.suspicious.customfragments.DomainCaptureFragment;
 import tk.pokatomnik.suspicious.services.database.entities.Password;
 import tk.pokatomnik.suspicious.R;
 import tk.pokatomnik.suspicious.SuspiciousApplication;
+import tk.pokatomnik.suspicious.services.settings.Settings;
 import tk.pokatomnik.suspicious.utils.Confirmation;
 import tk.pokatomnik.suspicious.utils.matchers.FuzzyMatcher;
 import tk.pokatomnik.suspicious.utils.matchers.IncludeMatcher;
@@ -33,7 +34,6 @@ import tk.pokatomnik.suspicious.utils.ObservablePrimitiveValueConnector;
 import tk.pokatomnik.suspicious.utils.SearchViewOnChangeListener;
 import tk.pokatomnik.suspicious.databinding.FragmentHomeBinding;
 import tk.pokatomnik.suspicious.ui.editpassword.EditPasswordFragment;
-import tk.pokatomnik.suspicious.ui.settings.SettingsStore;
 
 public class HomeFragment extends DomainCaptureFragment {
     private boolean useSmartSearch = false;
@@ -62,8 +62,12 @@ public class HomeFragment extends DomainCaptureFragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        useSmartSearch = new SettingsStore(getContext()).isUseSmartSearch();
         passwordsExtractor = new PasswordsExtractor(getActivity());
+        useSmartSearch = Optional.ofNullable(getActivity()).map(((activity) -> {
+            final SuspiciousApplication application = (SuspiciousApplication) activity.getApplication();
+            final Settings settingsService = application.getSettingsService();
+            return settingsService.isUseSmartSearch();
+        })).orElse(false);
         passRecycleViewManager = new PasswordsRecyclerViewManager(binding.recyclerView, getContext());
 
         searchTextObservable = new ObservablePrimitiveValueConnector<>(

@@ -6,23 +6,26 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
-import tk.pokatomnik.suspicious.ui.settings.SettingsStore;
+import tk.pokatomnik.suspicious.services.settings.Settings;
 import tk.pokatomnik.suspicious.utils.inputdialog.NewPasswordInputDialog;
 import tk.pokatomnik.suspicious.utils.inputdialog.PasswordInputDialog;
 import tk.pokatomnik.suspicious.utils.MD5;
 import tk.pokatomnik.suspicious.services.encryption.TextEncryption;
 
 public class SplashScreenActivity extends AppCompatActivity {
-    private SettingsStore settingsStore;
+    private Settings settingsService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        settingsStore = new SettingsStore(getApplicationContext());
-        final String masterPasswordHash = settingsStore.getMasterPasswordHash();
+        final SuspiciousApplication application = (SuspiciousApplication) getApplication();
+        settingsService = application.getSettingsService();
+
+        final String masterPasswordHash = settingsService.getMasterPasswordHash();
 
         if (masterPasswordHash == null) {
             handleFirstRun();
@@ -44,7 +47,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     private void handleFirstRun() {
         askNewMasterPasswordUntilCorrect((newMasterKey) -> {
             final String masterKeyHash = new MD5(newMasterKey).toString();
-            settingsStore.setMasterPasswordHash(masterKeyHash);
+            settingsService.setMasterPasswordHash(masterKeyHash);
             passwordDatabaseService().notifyMasterKeyChanged(newMasterKey);
             startMainActivity();
         });
