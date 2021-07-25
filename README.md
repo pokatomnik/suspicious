@@ -9,4 +9,4 @@ This is yet-another-password-manager for Android.
 * All passwords are stored locally (sqlite)
 * Customizable password generator
 * Exporting and importing passwords from/to CSV file
-
+* Encrypt passwords using Blowfish
