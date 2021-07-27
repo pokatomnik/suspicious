@@ -6,6 +6,8 @@ import tk.pokatomnik.suspicious.services.database.PasswordDatabaseService;
 import tk.pokatomnik.suspicious.services.database.PasswordDatabaseServiceDependencies;
 import tk.pokatomnik.suspicious.services.encryption.BlowfishEncryption;
 import tk.pokatomnik.suspicious.services.encryption.TextEncryption;
+import tk.pokatomnik.suspicious.services.export.PasswordsExportImport;
+import tk.pokatomnik.suspicious.services.export.ExportDependencies;
 import tk.pokatomnik.suspicious.services.settings.Settings;
 import tk.pokatomnik.suspicious.services.settings.SettingsDependencies;
 import tk.pokatomnik.suspicious.services.systeminfo.SystemInfo;
@@ -23,6 +25,13 @@ public class SuspiciousApplication extends Application {
             this::getApplicationContext,
             encryption::encrypt,
             encryption::decrypt
+        )
+    );
+
+    private final PasswordsExportImport passwordsExportImport = new PasswordsExportImport(
+        new ExportDependencies(
+            passwordDatabaseService::getAll,
+            passwordDatabaseService::insert
         )
     );
 
@@ -45,5 +54,9 @@ public class SuspiciousApplication extends Application {
 
     public SystemInfo getSystemInfoService() {
         return systemInfo;
+    }
+
+    public PasswordsExportImport getExportService() {
+        return passwordsExportImport;
     }
 }

@@ -1,4 +1,4 @@
-package tk.pokatomnik.suspicious.ui.export;
+package tk.pokatomnik.suspicious.services.export;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import tk.pokatomnik.suspicious.services.database.entities.Password;
-import tk.pokatomnik.suspicious.ui.export.CSV.PasswordCSVUtils;
+import tk.pokatomnik.suspicious.services.export.CSV.PasswordCSVUtils;
 
 public class CSVExporter {
     public String exportToString(List<Password> input) {
