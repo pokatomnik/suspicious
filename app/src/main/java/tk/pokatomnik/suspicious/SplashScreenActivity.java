@@ -6,7 +6,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import tk.pokatomnik.suspicious.services.settings.Settings;
@@ -34,11 +33,6 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
     }
 
-    private TextEncryption passwordDatabaseService() {
-        final SuspiciousApplication application = (SuspiciousApplication) getApplication();
-        return application.getEncryptionService();
-    }
-
     private void startMainActivity() {
         startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
         finish();
@@ -48,7 +42,9 @@ public class SplashScreenActivity extends AppCompatActivity {
         askNewMasterPasswordUntilCorrect((newMasterKey) -> {
             final String masterKeyHash = new MD5(newMasterKey).toString();
             settingsService.setMasterPasswordHash(masterKeyHash);
-            passwordDatabaseService().notifyMasterKeyChanged(newMasterKey);
+            final SuspiciousApplication application = (SuspiciousApplication) getApplication();
+            final TextEncryption encryptionService = application.getEncryptionService();
+            encryptionService.notifyMasterKeyChanged(newMasterKey);
             startMainActivity();
         });
     }
@@ -68,7 +64,9 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     private void handleRun(String existingMasterPasswordHash) {
         askMasterPasswordUtilCorrect(existingMasterPasswordHash, (validMasterPassword) -> {
-            passwordDatabaseService().notifyMasterKeyChanged(validMasterPassword);
+            final SuspiciousApplication application = (SuspiciousApplication) getApplication();
+            final TextEncryption encryptionService = application.getEncryptionService();
+            encryptionService.notifyMasterKeyChanged(validMasterPassword);
             startMainActivity();
         });
     }
